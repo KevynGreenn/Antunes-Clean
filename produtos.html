@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Antunes Clean</title>
+    <link rel="icon" type="image/png" href="imagens/aaa.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="produtos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">Antunes Clean</a>
+            <nav class="nav-menu" id="nav-menu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#sobre-nos" class="nav-link">Sobre Nós</a>
+                <a href="index.html#servicos" class="nav-link">Serviços</a>
+                <a href="produtos.html" class="nav-link active">Produtos</a>
+                <a href="index.html#contato" class="nav-link">Contato</a>
+            </nav>
+            <div class="header-icons">
+                <a href="carrinho.html" class="cart-icon" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
+                <button class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="products-page-main">
+        <div class="container">
+            <h1 id="page-title">Carregando...</h1>
+            <div class="products-content-area">
+                
+                <aside class="filters-sidebar">
+                    <h3>Filtros</h3>
+                    <div class="filter-group">
+                        <label for="filter-brand">Marca</label>
+                        <select id="filter-brand" name="brand">
+                            <option value="all">Todas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Preço</label>
+                        <ul id="price-filter-list" class="price-filter-list">
+                            <li><a href="#" data-min="0" data-max="40">Abaixo de R$40</a></li>
+                            <li><a href="#" data-min="40" data-max="70">R$40 - R$70</a></li>
+                            <li><a href="#" data-min="70" data-max="100">R$71 - R$100</a></li>
+                            <li><a href="#" data-min="100" data-max="9999">Acima de R$100</a></li>
+                        </ul>
+                    </div>
+                </aside>
+                
+                <section class="products-grid-container">
+                    <div class="sort-container">
+                        <div id="active-filters" class="active-filters"></div>
+                        <label for="sort-by">Ordenar por</label>
+                        <select id="sort-by" name="sort">
+                            <option value="default">Padrão</option>
+                            <option value="price-asc">Preço: Menor para Maior</option>
+                            <option value="price-desc">Preço: Maior para Menor</option>
+                            <option value="name-asc">Nome: A-Z</option>
+                        </select>
+                    </div>
+                    <div id="product-grid-dynamic" class="product-grid"></div>
+                </section>
+                
+            </div>
+        </div>
+    </main>
+    
+    <a href="#" id="back-to-top" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
+    <div id="notification" class="notification"></div>
+
+    <script src="database.js"></script>
+    <script src="script.js"></script>
+    <script src="produtos.js"></script>
+</body>
+</html>

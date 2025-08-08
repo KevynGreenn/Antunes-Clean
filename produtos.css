@@ -1,0 +1,170 @@
+/* Estilos para a página de produtos (produtos.html) */
+
+.products-page-main {
+    background-color: var(--bg-beige);
+    padding: 60px 0;
+}
+
+.products-page-main #page-title {
+    font-size: 2.5rem;
+    font-family: var(--serif-font);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.products-content-area {
+    display: grid;
+    grid-template-columns: 240px 1fr; /* Coluna de filtro com 240px e o resto para os produtos */
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* --- Barra de Filtros (Esquerda) --- */
+.filters-sidebar {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 100px; /* Header height + 20px */
+}
+
+.filters-sidebar h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.filter-group select, .filter-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* --- Container da Grade de Produtos (Direita) --- */
+.products-grid-container {
+    min-height: 60vh;
+}
+
+.sort-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sort-container label {
+    margin-right: 10px;
+}
+
+.sort-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* --- Estilo dos Cards de Produto (sobrescreve o estilo de style.css se necessário) --- */
+/* Usando a classe .product-grid de style.css para reuso */
+.products-content-area .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.products-content-area .product-card {
+    background-color: #fff;
+    border: 1px solid #eee;
+}
+
+.products-content-area .product-card img {
+    background-color: #f7f7f7; /* Fundo cinza claro para a imagem */
+    height: 220px;
+}
+
+.products-content-area .card-title {
+    font-size: 0.95rem;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .products-content-area {
+        grid-template-columns: 1fr; /* Coloca os filtros em cima dos produtos */
+    }
+
+    .filters-sidebar {
+        position: static; /* Remove o 'sticky' em telas menores */
+        margin-bottom: 40px;
+    }
+}
+/* --- Estilos para o Filtro de Preço por Lista --- */
+.price-filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.price-filter-list li {
+    margin-bottom: 8px;
+}
+
+.price-filter-list a {
+    text-decoration: none;
+    color: var(--brand-blue);
+    transition: color 0.3s;
+}
+
+.price-filter-list a:hover {
+    color: #007da8;
+}
+
+.price-filter-list a.active {
+    font-weight: bold;
+    color: var(--dark-text);
+}
+
+/* Estilos para o container de filtros ativos */
+.sort-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite quebrar linha se necessário */
+}
+
+.active-filters {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    display: flex;
+    gap: 10px;
+}
+
+.filter-tag {
+    background-color: #e1f3ff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-tag button.remove-filter {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}

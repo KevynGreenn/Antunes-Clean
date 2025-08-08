@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho - Antunes Clean</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="carrinho.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">Antunes Clean</a>
+            <nav class="nav-menu">
+                <a href="index.html">Home</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="index.html#contato">Contato</a>
+            </nav>
+            <div class="header-icons">
+                <a href="carrinho.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-page-main">
+        <div class="container">
+            <h1>Meu Carrinho de Compras</h1>
+            <div class="cart-container" id="cart-container">
+                
+                <div id="empty-cart-message" class="empty-cart-message">
+                    <p>Seu carrinho está vazio.</p>
+                    <a href="produtos.html?category=produtos-de-limpeza" class="btn">Ver produtos</a>
+                </div>
+
+                <div id="cart-with-items" class="cart-with-items">
+                    <div class="cart-items-list" id="cart-items-list">
+                        </div>
+                    <div class="cart-summary" id="cart-summary">
+                        <h2>Resumo do Pedido</h2>
+                        <div class="summary-line">
+                            <span>Subtotal</span>
+                            <span id="summary-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Frete</span>
+                            <span>Grátis</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total</span>
+                            <span id="summary-total">R$ 0,00</span>
+                        </div>
+                        
+                        <div class="address-field">
+                            <label for="endereco-entrega">Endereço para Entrega:</label>
+                            <textarea id="endereco-entrega" placeholder="Digite seu endereço completo: Rua, Número, Bairro, Ponto de Referência..." rows="4"></textarea>
+                        </div>
+                        
+                        <button class="btn checkout-btn">Finalizar Compra via WhatsApp</button>
+                        <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="notification" class="notification"></div>
+     <div id="confirmation-modal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modal-message">Tem certeza que deseja remover este item?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+                <button id="modal-confirm-btn" class="btn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script> <script src="carrinho.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id'));
+    const product = allProducts.find(p => p.id === productId);
+
+    if (product) {
+        document.title = `${product.name} - Antunes Clean`;
+        document.getElementById('breadcrumbs').innerHTML = `<a href="index.html">Home</a> / <a href="produtos.html?category=${product.category}">${product.category.replace('-', ' ')}</a> / ${product.name}`;
+        
+        const mainImage = document.getElementById('main-product-image');
+        mainImage.src = product.image;
+        mainImage.alt = product.name;
+
+        document.getElementById('product-name').textContent = product.name;
+        document.getElementById('product-price').textContent = `R$ ${product.price.toFixed(2)}`;
+        document.getElementById('product-short-description').textContent = product.description;
+
+        const tagElement = document.getElementById('product-tag');
+        if (product.tag) { tagElement.textContent = product.tag; tagElement.style.display = 'block'; } else { tagElement.style.display = 'none'; }
+        
+        // --- LÓGICA DA GALERIA DE IMAGENS ---
+        const thumbnailsContainer = document.getElementById('product-thumbnails');
+        if (product.gallery && product.gallery.length > 1) {
+            thumbnailsContainer.innerHTML = ''; // Limpa o container
+            product.gallery.forEach((imgSrc, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = imgSrc;
+                thumb.className = 'thumbnail-image';
+                if (index === 0) thumb.classList.add('active'); // Ativa a primeira miniatura
+
+                thumb.addEventListener('click', () => {
+                    mainImage.src = imgSrc; // Muda a imagem principal
+                    // Atualiza a classe 'active'
+                    thumbnailsContainer.querySelector('.active').classList.remove('active');
+                    thumb.classList.add('active');
+                });
+                thumbnailsContainer.appendChild(thumb);
+            });
+        }
+
+        const decreaseBtn = document.getElementById('decrease-qty');
+        const increaseBtn = document.getElementById('increase-qty');
+        const quantityInput = document.getElementById('quantity-input');
+        decreaseBtn.addEventListener('click', () => { if (parseInt(quantityInput.value) > 1) { quantityInput.value--; } });
+        increaseBtn.addEventListener('click', () => { quantityInput.value++; });
+        
+        const addToCartBtn = document.getElementById('add-to-cart-detail');
+        addToCartBtn.addEventListener('click', () => {
+            let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
+            const quantity = parseInt(quantityInput.value);
+            const existingItem = cart.find(item => item.id === product.id.toString());
+            if (existingItem) { existingItem.quantity += quantity; } else { cart.push({ ...product, id: product.id.toString(), quantity: quantity }); }
+            localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
+            window.updateCartCount();
+            window.showNotification(`${quantity}x "${product.name}" foi adicionado ao carrinho!`);
+        });
+
+        const relatedProductsGrid = document.getElementById('related-products-grid');
+        const relatedProducts = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+        if (relatedProducts.length > 0) {
+            relatedProducts.forEach(related => {
+                const cardLink = document.createElement('a');
+                cardLink.href = `produto-detalhe.html?id=${related.id}`;
+                cardLink.className = 'product-card-link';
+                cardLink.innerHTML = `<div class="product-card"><img src="${related.image}" alt="${related.name}"><div class="card-title">${related.name.toUpperCase()}</div><div class="card-price">R$ ${related.price.toFixed(2)}</div></div>`;
+                relatedProductsGrid.appendChild(cardLink);
+            });
+        } else {
+            document.querySelector('.related-products-section').style.display = 'none';
+        }
+    } else {
+        document.querySelector('.product-detail-page .container').innerHTML = '<h1>Produto não encontrado</h1><p>O produto que você está procurando não existe ou foi removido.</p><a href="index.html" class="btn">Voltar para a Home</a>';
+    }
+});
