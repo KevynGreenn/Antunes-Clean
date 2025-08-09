@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // --- NÚMERO DE WHATSAPP ---
-    const seuNumeroWhatsapp = '5567992007055'; 
+    const seuNumeroWhatsapp = '5567998879733'; 
 
     // --- ELEMENTOS DA PÁGINA ---
     const modal = document.getElementById('confirmation-modal');
