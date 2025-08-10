@@ -60,7 +60,8 @@
                             <textarea id="endereco-entrega" placeholder="Digite seu endereço completo: Rua, Número, Bairro, Ponto de Referência..." rows="4"></textarea>
                         </div>
                         
-                        <button class="btn checkout-btn">Finalizar Compra via WhatsApp</button>
+                        <button class="btn checkout-btn" id="checkout-pix-btn">Finalizar Compra via Pix</button>
+                        <button class="btn checkout-btn" id="checkout-whatsapp-btn">Finalizar Compra via WhatsApp</button>
                         <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
                     </div>
                 </div>
@@ -75,6 +76,21 @@
                 <button id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
                 <button id="modal-confirm-btn" class="btn">Confirmar</button>
             </div>
+        </div>
+    </div>
+    
+    <div id="pix-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Pagar com Pix</h2>
+            <p>Escaneie o QR Code ou use o código Pix para pagar.</p>
+            <div class="pix-info">
+                <img id="pix-qrcode" src="" alt="QR Code Pix" style="width: 200px; height: 200px;">
+                <div class="pix-code-container">
+                    <input type="text" id="pix-copy-code" value="" readonly>
+                    <button id="copy-pix-btn" class="btn">Copiar Código</button>
+                </div>
+            </div>
+            <button id="close-pix-modal" class="btn btn-secondary">Fechar</button>
         </div>
     </div>
     

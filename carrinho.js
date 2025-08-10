@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBtn = document.getElementById('modal-cancel-btn');
     const enderecoTextarea = document.getElementById('endereco-entrega');
 
+    // NOVOS ELEMENTOS PARA O MODAL PIX
+    const pixModal = document.getElementById('pix-modal');
+    const pixQrcode = document.getElementById('pix-qrcode');
+    const pixCopyCodeInput = document.getElementById('pix-copy-code');
+    const copyPixBtn = document.getElementById('copy-pix-btn');
+    const closePixModalBtn = document.getElementById('close-pix-modal');
+    const checkoutPixButton = document.getElementById('checkout-pix-btn');
+    
     // --- FUNÇÕES GLOBAIS DE CARRINHO ---
     function getCart() {
         return JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
@@ -41,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartWithItems = document.getElementById('cart-with-items');
     const summarySubtotal = document.getElementById('summary-subtotal');
     const summaryTotal = document.getElementById('summary-total');
-    const checkoutButton = document.querySelector('.checkout-btn');
 
     function renderCart() {
         const cart = getCart();
@@ -124,11 +131,13 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmBtn.addEventListener('click', handleConfirm);
         cancelBtn.addEventListener('click', handleCancel);
     }
-
-    if (checkoutButton) {
-        checkoutButton.addEventListener('click', () => {
+    
+    // NOVO BLOCO DE LÓGICA PARA PAGAMENTO VIA PIX
+    if (checkoutPixButton) {
+        checkoutPixButton.addEventListener('click', async () => {
             const cart = getCart();
             const endereco = enderecoTextarea.value.trim();
+            const pixKey = "kevynwpantunes2@gmail.com"; // Chave Pix fixa
 
             if (cart.length === 0) {
                 window.showNotification('Seu carrinho está vazio!');
@@ -137,16 +146,70 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!endereco) {
                 window.showNotification('Por favor, preencha o endereço para entrega.');
-                enderecoTextarea.focus(); // Foca no campo de endereço
+                enderecoTextarea.focus();
                 return;
             }
-
+            
             // Salva o endereço para a próxima visita
             localStorage.setItem('antunesCleanUserAddress', endereco);
 
+            try {
+                // Envia o pedido para o novo servidor de backend
+                const response = await fetch('https://servidorpix.onrender.com', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pixKey: pixKey, total: calculateTotal(cart) })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    pixQrcode.src = data.qrCodeImage;
+                    pixCopyCodeInput.value = data.pixCode;
+                    pixModal.classList.add('show');
+                } else {
+                    window.showNotification('Erro ao gerar pagamento.');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                window.showNotification('Erro de comunicação com o servidor de pagamento.');
+            }
+        });
+    }
+
+    // Ações do Modal
+    if (copyPixBtn) {
+      copyPixBtn.addEventListener('click', () => {
+          pixCopyCodeInput.select();
+          document.execCommand('copy');
+          window.showNotification('Código Pix copiado!');
+      });
+    }
+
+    if (closePixModalBtn) {
+      closePixModalBtn.addEventListener('click', () => {
+          pixModal.classList.remove('show');
+      });
+    }
+
+    function calculateTotal(cart) {
+        return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    }
+
+    // --- LÓGICA DO BOTÃO DO WHATSAPP (antigo) ---
+    const checkoutWhatsappButton = document.getElementById('checkout-whatsapp-btn');
+    if (checkoutWhatsappButton) {
+        checkoutWhatsappButton.addEventListener('click', () => {
+            const cart = getCart();
+            const endereco = enderecoTextarea.value.trim();
+
+            if (cart.length === 0 || !endereco) {
+                window.showNotification('Preencha o carrinho e o endereço.');
+                return;
+            }
+            localStorage.setItem('antunesCleanUserAddress', endereco);
             let mensagem = 'Olá! Gostaria de fazer o seguinte pedido:\n\n';
             let totalPedido = 0;
-
             cart.forEach(item => {
                 const subtotalItem = item.price * item.quantity;
                 mensagem += `*Produto:* ${item.name}\n`;
@@ -154,19 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 mensagem += `*Subtotal:* R$ ${subtotalItem.toFixed(2)}\n\n`;
                 totalPedido += subtotalItem;
             });
-
-            // Adiciona o endereço e o total à mensagem
             mensagem += `*ENDEREÇO DE ENTREGA:*\n${endereco}\n\n`;
             mensagem += `*TOTAL DO PEDIDO: R$ ${totalPedido.toFixed(2)}*`;
             
             const mensagemCodificada = encodeURIComponent(mensagem);
             const linkWhatsapp = `https://wa.me/${seuNumeroWhatsapp}?text=${mensagemCodificada}`;
             window.open(linkWhatsapp, '_blank');
-
-            saveCart([]);
         });
     }
-
+    
     // --- INICIALIZAÇÃO DA PÁGINA ---
     carregarEnderecoSalvo();
     renderCart();
