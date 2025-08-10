@@ -28,7 +28,7 @@
     </header>
 
     <main class="checkout-page">
-        <div class="checkout-container">
+        <div id="cart-container" class="checkout-container">
 
             <div class="info-section">
                 <h3>Informações de Contato e Entrega</h3>
@@ -50,7 +50,10 @@
                         <input type="text" id="reference">
                     </div>
                     
-                    <button type="submit" class="btn btn-full">Finalizar Compra via WhatsApp</button>
+                    <button type="submit" class="btn btn-full">
+                        <i class="fab fa-whatsapp"></i> Finalizar Compra via WhatsApp
+                    </button>
+                    <p class="whatsapp-help-text">Você será redirecionado para o WhatsApp para confirmar os detalhes do seu pedido diretamente conosco.</p>
                 </form>
             </div>
 
@@ -73,6 +76,12 @@
                 </div>
             </aside>
 
+        </div>
+
+        <div id="empty-cart-message" class="empty-cart-message" style="display: none;">
+            <h2>Seu carrinho está vazio</h2>
+            <p>Adicione produtos ao seu carrinho para poder finalizar a compra.</p>
+            <a href="produtos.html" class="btn">Ver Produtos</a>
         </div>
     </main>
     

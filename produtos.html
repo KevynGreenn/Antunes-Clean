@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF--8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produtos - Antunes Clean</title>
     <link rel="icon" type="image/png" href="imagens/aaa.png">
@@ -17,7 +17,6 @@
             <nav class="nav-menu" id="nav-menu">
                 <a href="index.html#home" class="nav-link">Home</a>
                 <a href="index.html#sobre-nos" class="nav-link">Sobre Nós</a>
-                <a href="index.html#servicos" class="nav-link">Serviços</a>
                 <a href="produtos.html" class="nav-link active">Produtos</a>
                 <a href="index.html#contato" class="nav-link">Contato</a>
             </nav>
@@ -36,15 +35,19 @@
     <main class="products-page-main">
         <div class="container">
             <h1 id="page-title">Carregando...</h1>
+
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="search" id="search-input" placeholder="Buscar pelo nome do produto...">
+            </div>
+
             <div class="products-content-area">
                 
                 <aside class="filters-sidebar">
                     <h3>Filtros</h3>
                     <div class="filter-group">
                         <label for="filter-brand">Marca</label>
-                        <select id="filter-brand" name="brand">
-                            <option value="all">Todas</option>
-                        </select>
+                        <select id="filter-brand" name="brand"><option value="all">Todas</option></select>
                     </div>
                     <div class="filter-group">
                         <label>Preço</label>
@@ -81,5 +84,6 @@
     <script src="database.js"></script>
     <script src="script.js"></script>
     <script src="produtos.js"></script>
+    
 </body>
 </html>

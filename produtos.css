@@ -1,5 +1,37 @@
 /* Estilos para a página de produtos (produtos.html) */
+/* Adicione no início de produtos.css */
 
+/* --- BARRA DE PESQUISA --- */
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 40px auto; /* Centraliza e adiciona espaço abaixo */
+}
+
+#search-input {
+    width: 100%;
+    height: 50px;
+    padding: 10px 20px 10px 50px; /* Espaço à esquerda para o ícone */
+    border-radius: 50px; /* Bordas arredondadas */
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-family: var(--sans-font);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px rgba(0, 121, 107, 0.15); /* Efeito de brilho da cor primária */
+}
+
+.search-container .fa-search {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+}
 .products-page-main {
     background-color: var(--bg-beige);
     padding: 60px 0;
