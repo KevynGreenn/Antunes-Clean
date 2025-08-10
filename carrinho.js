@@ -9,13 +9,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBtn = document.getElementById('modal-cancel-btn');
     const enderecoTextarea = document.getElementById('endereco-entrega');
 
-    // NOVOS ELEMENTOS PARA O MODAL PIX
+    // NOVOS ELEMENTOS PARA O MODAL PIX E BOTÕES
     const pixModal = document.getElementById('pix-modal');
     const pixQrcode = document.getElementById('pix-qrcode');
     const pixCopyCodeInput = document.getElementById('pix-copy-code');
     const copyPixBtn = document.getElementById('copy-pix-btn');
     const closePixModalBtn = document.getElementById('close-pix-modal');
     const checkoutPixButton = document.getElementById('checkout-pix-btn');
+    const checkoutWhatsappButton = document.getElementById('checkout-whatsapp-btn');
     
     // --- FUNÇÕES GLOBAIS DE CARRINHO ---
     function getCart() {
@@ -137,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         checkoutPixButton.addEventListener('click', async () => {
             const cart = getCart();
             const endereco = enderecoTextarea.value.trim();
-            const pixKey = "kevynwpantunes2@gmail.com"; // Chave Pix fixa
+            const pixKey = "kevynwpantunes2@gmail.com";
 
             if (cart.length === 0) {
                 window.showNotification('Seu carrinho está vazio!');
@@ -154,8 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('antunesCleanUserAddress', endereco);
 
             try {
-                // Envia o pedido para o novo servidor de backend
-                const response = await fetch('https://servidorpix.onrender.com', {
+                // ATENÇÃO: Substitua 'http://localhost:3000' pela URL pública do seu servidor (ex: do Render)
+                const response = await fetch('http://localhost:3000/gerar-qrcode-pix', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pixKey: pixKey, total: calculateTotal(cart) })
@@ -197,7 +198,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- LÓGICA DO BOTÃO DO WHATSAPP (antigo) ---
-    const checkoutWhatsappButton = document.getElementById('checkout-whatsapp-btn');
     if (checkoutWhatsappButton) {
         checkoutWhatsappButton.addEventListener('click', () => {
             const cart = getCart();
