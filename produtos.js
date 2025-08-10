@@ -1,3 +1,4 @@
+//teste
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- ELEMENTOS DA PÁGINA ---

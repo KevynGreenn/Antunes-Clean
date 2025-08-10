@@ -1,9 +1,10 @@
 /* Estilos para a nova página de Checkout Simplificado */
-
+/*teste*/
 .checkout-page {
     background-color: var(--bg-light); /* Usando a cor de fundo moderna */
     padding: 60px 20px;
     min-height: 80vh;
+    
 }
 
 .checkout-container {

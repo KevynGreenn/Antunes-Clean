@@ -1,4 +1,5 @@
 // --- FUNÇÕES GLOBAIS ---
+//teste
 let notificationTimeout;
 window.showNotification = function(message) {
     const notification = document.getElementById('notification');

@@ -1,3 +1,4 @@
+//teste
 const allProducts = [
     {
         id: 1,
