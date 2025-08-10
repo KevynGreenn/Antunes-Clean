@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- NÚMERO DE WHATSAPP ---
+    // --- DADOS DA SUA EMPRESA ---
     const seuNumeroWhatsapp = '5567998879733'; 
+    const suaChavePix = "kevynwpantunes2@gmail.com"; // INSIRA AQUI SUA CHAVE PIX
+    const seuNomeComercial = "Antunes Clean"; // NOME QUE APARECERÁ NO APP DO CLIENTE
+    const suaCidade = "CAMPO GRANDE"; // CIDADE ONDE SUA EMPRESA ESTÁ REGISTRADA
 
     // --- ELEMENTOS DA PÁGINA ---
     const modal = document.getElementById('confirmation-modal');
@@ -9,9 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBtn = document.getElementById('modal-cancel-btn');
     const enderecoTextarea = document.getElementById('endereco-entrega');
 
-    // NOVOS ELEMENTOS PARA O MODAL PIX E BOTÕES
     const pixModal = document.getElementById('pix-modal');
-    const pixQrcode = document.getElementById('pix-qrcode');
+    const pixQrcodeCanvas = document.getElementById('pix-qrcode');
     const pixCopyCodeInput = document.getElementById('pix-copy-code');
     const copyPixBtn = document.getElementById('copy-pix-btn');
     const closePixModalBtn = document.getElementById('close-pix-modal');
@@ -37,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // --- FUNÇÃO PARA CARREGAR ENDEREÇO SALVO ---
     function carregarEnderecoSalvo() {
         const enderecoSalvo = localStorage.getItem('antunesCleanUserAddress');
         if (enderecoSalvo) {
@@ -103,12 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (item) {
             item.quantity += change;
             if (item.quantity <= 0) {
-                let cart = getCart();
                 cart = cart.filter(i => i.id !== productId);
-                saveCart(cart);
-            } else {
-                saveCart(cart);
             }
+            saveCart(cart);
         }
     }
 
@@ -133,52 +131,76 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelBtn.addEventListener('click', handleCancel);
     }
     
-    // NOVO BLOCO DE LÓGICA PARA PAGAMENTO VIA PIX
+    // --- LÓGICA DE PAGAMENTO VIA PIX (SEM NODE.JS) ---
     if (checkoutPixButton) {
-        checkoutPixButton.addEventListener('click', async () => {
+        checkoutPixButton.addEventListener('click', () => {
             const cart = getCart();
             const endereco = enderecoTextarea.value.trim();
-            const pixKey = "kevynwpantunes2@gmail.com";
+            const totalAmount = calculateTotal(cart).toFixed(2);
 
-            if (cart.length === 0) {
-                window.showNotification('Seu carrinho está vazio!');
-                return;
-            }
-
-            if (!endereco) {
-                window.showNotification('Por favor, preencha o endereço para entrega.');
-                enderecoTextarea.focus();
+            if (cart.length === 0 || !endereco) {
+                window.showNotification('Preencha o carrinho e o endereço para continuar.');
                 return;
             }
             
-            // Salva o endereço para a próxima visita
             localStorage.setItem('antunesCleanUserAddress', endereco);
 
-            try {
-                // URL CORRIGIDA
-                const response = await fetch('https://servidorpix.onrender.com/gerar-qrcode-pix', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pixKey: pixKey, total: calculateTotal(cart) })
-                });
+            // --- FUNÇÃO PARA GERAR O BRCODE (PIX COPIA E COLA) - VERSÃO CORRIGIDA ---
+            function generateBRCode(pixKey, merchantName, merchantCity, amount) {
+                
+                // Função para sanitizar (limpar) os textos
+                const sanitizeText = (text) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase().replace(/\s/g, '');
 
-                const data = await response.json();
+                const sanitizedName = sanitizeText(merchantName).substring(0, 25);
+                const sanitizedCity = sanitizeText(merchantCity).substring(0, 15);
 
-                if (data.success) {
-                    pixQrcode.src = data.qrCodeImage;
-                    pixCopyCodeInput.value = data.pixCode;
-                    pixModal.classList.add('show');
-                } else {
-                    window.showNotification('Erro ao gerar pagamento.');
+                const f = (id, value) => {
+                    const size = String(value.length).padStart(2, '0');
+                    return id + size + value;
+                };
+
+                const payload = [
+                    f('00', '01'),
+                    f('26', f('00', 'BR.GOV.BCB.PIX') + f('01', pixKey)),
+                    f('52', '0000'),
+                    f('53', '986'),
+                    f('54', amount),
+                    f('58', 'BR'),
+                    f('59', sanitizedName),
+                    f('60', sanitizedCity),
+                    f('62', f('05', '***'))
+                ].join('');
+
+                const fullPayload = payload + '6304';
+
+                // Cálculo do CRC16
+                let crc = 0xFFFF;
+                for (let i = 0; i < fullPayload.length; i++) {
+                    crc ^= (fullPayload.charCodeAt(i) << 8);
+                    for (let j = 0; j < 8; j++) {
+                        crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+                    }
                 }
-            } catch (error) {
-                console.error('Erro:', error);
-                window.showNotification('Erro de comunicação com o servidor de pagamento.');
+                const crc16 = ('0000' + (crc & 0xFFFF).toString(16).toUpperCase()).slice(-4);
+                
+                return fullPayload + crc16;
             }
+
+            const brCode = generateBRCode(suaChavePix, seuNomeComercial, suaCidade, totalAmount);
+            pixCopyCodeInput.value = brCode;
+
+            if (window.QRious) {
+                new QRious({ element: pixQrcodeCanvas, value: brCode, size: 220, level: 'H' });
+            } else {
+                window.showNotification("Erro ao gerar QR Code. Tente novamente.");
+                return;
+            }
+
+            pixModal.classList.add('show');
         });
     }
 
-    // Ações do Modal
+    // Ações do Modal PIX
     if (copyPixBtn) {
       copyPixBtn.addEventListener('click', () => {
           pixCopyCodeInput.select();
@@ -188,9 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (closePixModalBtn) {
-      closePixModalBtn.addEventListener('click', () => {
-          pixModal.classList.remove('show');
-      });
+      closePixModalBtn.addEventListener('click', () => pixModal.classList.remove('show'));
     }
 
     function calculateTotal(cart) {
@@ -207,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.showNotification('Preencha o carrinho e o endereço.');
                 return;
             }
+
             localStorage.setItem('antunesCleanUserAddress', endereco);
             let mensagem = 'Olá! Gostaria de fazer o seguinte pedido:\n\n';
             let totalPedido = 0;

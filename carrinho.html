@@ -80,20 +80,21 @@
     </div>
     
     <div id="pix-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Pagar com Pix</h2>
-            <p>Escaneie o QR Code ou use o código Pix para pagar.</p>
-            <div class="pix-info">
-                <img id="pix-qrcode" src="" alt="QR Code Pix" style="width: 200px; height: 200px;">
-                <div class="pix-code-container">
-                    <input type="text" id="pix-copy-code" value="" readonly>
-                    <button id="copy-pix-btn" class="btn">Copiar Código</button>
-                </div>
-            </div>
-            <button id="close-pix-modal" class="btn btn-secondary">Fechar</button>
+       <div class="modal-content">
+    <h2>Pagar com Pix</h2>
+    <p>Escaneie o QR Code ou use o código Pix para pagar.</p>
+    <div class="pix-info">
+        <canvas id="pix-qrcode"></canvas> 
+        <div class="pix-code-container">
+            <input type="text" id="pix-copy-code" value="" readonly>
+            <button id="copy-pix-btn" class="btn">Copiar Código</button>
         </div>
+    </div>
+    <button id="close-pix-modal" class="btn btn-secondary">Fechar</button>
+</div>
     </div>
     
     <script src="script.js"></script> <script src="carrinho.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </body>
 </html>
