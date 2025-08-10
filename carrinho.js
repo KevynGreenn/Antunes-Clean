@@ -155,8 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('antunesCleanUserAddress', endereco);
 
             try {
-                // ATENÇÃO: Substitua 'http://localhost:3000' pela URL pública do seu servidor (ex: do Render)
-                const response = await fetch('https://servidorpix.onrender.com/', {
+                // URL CORRIGIDA
+                const response = await fetch('https://servidorpix.onrender.com/gerar-qrcode-pix', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pixKey: pixKey, total: calculateTotal(cart) })
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     }
 
-    // --- LÓGICA DO BOTÃO DO WHATSAPP (antigo) ---
+    // --- LÓGICA DO BOTÃO DO WHATSAPP ---
     if (checkoutWhatsappButton) {
         checkoutWhatsappButton.addEventListener('click', () => {
             const cart = getCart();
