@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // ATENÇÃO: Substitua 'http://localhost:3000' pela URL pública do seu servidor (ex: do Render)
-                const response = await fetch('http://localhost:3000/gerar-qrcode-pix', {
+                const response = await fetch('https://servidorpix.onrender.com/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ pixKey: pixKey, total: calculateTotal(cart) })
