@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Carrinho - Antunes Clean</title>
+    <title>Finalizar Compra - Antunes Clean</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="carrinho.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="imagens/aaa.png">
 </head>
 <body>
 
@@ -16,7 +17,6 @@
             <nav class="nav-menu">
                 <a href="index.html">Home</a>
                 <a href="produtos.html">Produtos</a>
-                <a href="index.html#contato">Contato</a>
             </nav>
             <div class="header-icons">
                 <a href="carrinho.html" class="cart-icon">
@@ -27,74 +27,57 @@
         </div>
     </header>
 
-    <main class="cart-page-main">
-        <div class="container">
-            <h1>Meu Carrinho de Compras</h1>
-            <div class="cart-container" id="cart-container">
-                
-                <div id="empty-cart-message" class="empty-cart-message">
-                    <p>Seu carrinho está vazio.</p>
-                    <a href="produtos.html?category=produtos-de-limpeza" class="btn">Ver produtos</a>
-                </div>
+    <main class="checkout-page">
+        <div class="checkout-container">
 
-                <div id="cart-with-items" class="cart-with-items">
-                    <div class="cart-items-list" id="cart-items-list">
-                        </div>
-                    <div class="cart-summary" id="cart-summary">
-                        <h2>Resumo do Pedido</h2>
-                        <div class="summary-line">
-                            <span>Subtotal</span>
-                            <span id="summary-subtotal">R$ 0,00</span>
-                        </div>
-                        <div class="summary-line">
-                            <span>Frete</span>
-                            <span>Grátis</span>
-                        </div>
-                        <div class="summary-line total">
-                            <span>Total</span>
-                            <span id="summary-total">R$ 0,00</span>
-                        </div>
-                        
-                        <div class="address-field">
-                            <label for="endereco-entrega">Endereço para Entrega:</label>
-                            <textarea id="endereco-entrega" placeholder="Digite seu endereço completo: Rua, Número, Bairro, Ponto de Referência..." rows="4"></textarea>
-                        </div>
-                        
-                        <button class="btn checkout-btn" id="checkout-pix-btn">Finalizar Compra via Pix</button>
-                        <button class="btn checkout-btn" id="checkout-whatsapp-btn">Finalizar Compra via WhatsApp</button>
-                        <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
+            <div class="info-section">
+                <h3>Informações de Contato e Entrega</h3>
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="name">Nome Completo *</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefone / WhatsApp *</label>
+                        <input type="tel" id="phone" placeholder="(00) 00000-0000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Endereço Completo (Rua, Nº, Bairro) *</label>
+                        <input type="text" id="address" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="reference">Ponto de Referência (Opcional)</label>
+                        <input type="text" id="reference">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-full">Finalizar Compra via WhatsApp</button>
+                </form>
+            </div>
+
+            <aside class="order-summary-section">
+                <h4>Resumo do Pedido</h4>
+                <div id="summary-items-list">
+                    </div>
+                <div class="summary-totals">
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">R$0.00</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span id="summary-total">R$0.00</span>
                     </div>
                 </div>
-            </div>
+                 <div class="continue-shopping">
+                    <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
+                </div>
+            </aside>
+
         </div>
     </main>
+    
     <div id="notification" class="notification"></div>
-     <div id="confirmation-modal" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modal-message">Tem certeza que deseja remover este item?</p>
-            <div class="modal-actions">
-                <button id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
-                <button id="modal-confirm-btn" class="btn">Confirmar</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="pix-modal" class="modal-overlay">
-       <div class="modal-content">
-    <h2>Pagar com Pix</h2>
-    <p>Escaneie o QR Code ou use o código Pix para pagar.</p>
-    <div class="pix-info">
-        <canvas id="pix-qrcode"></canvas> 
-        <div class="pix-code-container">
-            <input type="text" id="pix-copy-code" value="" readonly>
-            <button id="copy-pix-btn" class="btn">Copiar Código</button>
-        </div>
-    </div>
-    <button id="close-pix-modal" class="btn btn-secondary">Fechar</button>
-</div>
-    </div>
-    
-    <script src="script.js"></script> <script src="carrinho.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="script.js"></script>
+    <script src="carrinho.js"></script>
 </body>
 </html>
