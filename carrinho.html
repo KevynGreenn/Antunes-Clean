@@ -1,4 +1,3 @@
-<!-- Meu comentário em HTML -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,7 +29,6 @@
 
     <main class="checkout-page">
         <div id="cart-container" class="checkout-container">
-
             <div class="info-section">
                 <h3>Informações de Contato e Entrega</h3>
                 <form id="checkout-form">
@@ -52,9 +50,9 @@
                     </div>
                     
                     <button type="submit" class="btn btn-full">
-                        <i class="fab fa-whatsapp"></i> Finalizar Compra via WhatsApp
+                        <i class="fas fa-dollar-sign"></i> Gerar PIX para Pagamento
                     </button>
-                    <p class="whatsapp-help-text">Você será redirecionado para o WhatsApp para confirmar os detalhes do seu pedido diretamente conosco.</p>
+                    <p class="whatsapp-help-text">Após preencher seus dados, vamos gerar um QR Code PIX para você finalizar a compra.</p>
                 </form>
             </div>
 
@@ -76,7 +74,21 @@
                     <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
                 </div>
             </aside>
+        </div>
 
+        <div id="pix-payment-section" class="pix-payment-container" style="display: none;">
+            <h3>Pague com PIX para Finalizar</h3>
+            <p>Escaneie o QR Code abaixo com o app do seu banco.</p>
+            <div id="pix-qrcode-container"></div>
+            <p>Ou use o PIX Copia e Cola:</p>
+            <textarea id="pix-copy-paste" readonly></textarea>
+            <button id="copy-pix-btn" class="btn"><i class="fas fa-copy"></i> Copiar Código</button>
+            <div class="whatsapp-instruction">
+                <p>Após o pagamento, clique no botão abaixo para nos enviar o comprovante via WhatsApp e agilizar a sua entrega!</p>
+                <button id="send-receipt-btn" class="btn btn-full">
+                    <i class="fab fa-whatsapp"></i> Enviar Comprovante
+                </button>
+            </div>
         </div>
 
         <div id="empty-cart-message" class="empty-cart-message" style="display: none;">
@@ -87,6 +99,8 @@
     </main>
     
     <div id="notification" class="notification"></div>
+    
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="script.js"></script>
     <script src="carrinho.js"></script>
 </body>

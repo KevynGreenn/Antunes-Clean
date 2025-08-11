@@ -1,8 +1,11 @@
 //teste
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- DADOS DA EMPRESA ---
+    // --- DADOS DA EMPRESA E PIX ---
     const numeroWhatsapp = '5567998879733';
+    const chavePix = 'kevynwpantunes2@gmail.com';
+    const nomeBeneficiado = 'Antunes Clean';
+    const cidadeBeneficiado = 'TRES LAGOAS';
 
     // --- ELEMENTOS DO DOM ---
     const checkoutForm = document.getElementById('checkout-form');
@@ -12,18 +15,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartContainer = document.getElementById('cart-container');
     const emptyCartMessage = document.getElementById('empty-cart-message');
 
+    // --- NOVA SEÇÃO PIX ---
+    const pixPaymentSection = document.getElementById('pix-payment-section');
+    const pixQrCodeContainer = document.getElementById('pix-qrcode-container');
+    const pixCopyPaste = document.getElementById('pix-copy-paste');
+    const copyPixBtn = document.getElementById('copy-pix-btn');
+    const sendReceiptBtn = document.getElementById('send-receipt-btn');
+
     // --- FUNÇÕES DE MANIPULAÇÃO DO CARRINHO ---
     function getCart() { return JSON.parse(localStorage.getItem('antunesCleanCart')) || []; }
     function saveCart(cart) {
         localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
-        renderPage(); // Renderiza novamente a página inteira para refletir as mudanças
+        renderPage(); 
     }
     function changeQuantity(productId, change) {
         let cart = getCart();
         const item = cart.find(p => p.id === productId);
         if (item) {
             item.quantity += change;
-            if (item.quantity <= 0) { // Se a quantidade for 0 ou menos, remove o item
+            if (item.quantity <= 0) {
                 cart = cart.filter(p => p.id !== productId);
             }
         }
@@ -65,21 +75,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         summarySubtotal.textContent = `R$${subtotal.toFixed(2)}`;
         summaryTotal.textContent = `R$${subtotal.toFixed(2)}`;
-        addCartEventListeners(); // Adiciona eventos aos novos botões
+        addCartEventListeners();
     }
     
-    // Mostra/Esconde o conteúdo da página com base no carrinho
     function renderPage() {
         const cart = getCart();
         if (cart.length === 0) {
             cartContainer.style.display = 'none';
             emptyCartMessage.style.display = 'block';
+            pixPaymentSection.style.display = 'none';
         } else {
             cartContainer.style.display = 'grid';
             emptyCartMessage.style.display = 'none';
             renderOrderSummary();
         }
-        window.updateCartCount(); // Atualiza o contador no header
+        window.updateCartCount();
     }
 
     // --- EVENT LISTENERS ---
@@ -89,36 +99,104 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.remove-btn').forEach(btn => btn.addEventListener('click', e => removeItem(e.currentTarget.dataset.id)));
     }
 
+    // --- NOVA LÓGICA DE CHECKOUT ---
     function handleCheckoutSubmit(e) {
         e.preventDefault();
-        const customerInfo = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
-            reference: document.getElementById('reference').value
-        };
+        
+        // 1. Ocultar formulário e mostrar seção PIX
+        cartContainer.style.display = 'none';
+        pixPaymentSection.style.display = 'block';
+
+        // 2. Gerar Payload do PIX
         const cart = getCart();
         const totalPedido = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const txid = "pedido" + new Date().getTime(); // ID único da transação
+        const valorFormatado = totalPedido.toFixed(2);
+        
+        // Função para formatar os campos do payload (EMV-QR)
+        const formatField = (id, value) => {
+            const len = value.length.toString().padStart(2, '0');
+            return `${id}${len}${value}`;
+        };
 
-        let mensagem = `Olá, Antunes Clean! Gostaria de fazer um novo pedido.\n\n`;
-        mensagem += `*--- DADOS DO CLIENTE ---*\n*Nome:* ${customerInfo.name}\n*Telefone:* ${customerInfo.phone}\n\n`;
-        mensagem += `*--- ENDEREÇO DE ENTREGA (Três Lagoas) ---*\n${customerInfo.address}\n`;
-        if (customerInfo.reference) { mensagem += `*Referência:* ${customerInfo.reference}\n`; }
-        mensagem += `\n*--- ITENS DO PEDIDO ---*\n`;
-        cart.forEach(item => {
-            mensagem += `*${item.name}*\n   - Quantidade: ${item.quantity}\n   - Subtotal: R$ ${(item.price * item.quantity).toFixed(2)}\n\n`;
+        let payload = '000201' +
+                      formatField('26', 
+                          formatField('00', 'br.gov.bcb.pix') +
+                          formatField('01', chavePix)
+                      ) +
+                      formatField('52', '0000') +
+                      formatField('53', '986') + // Moeda: BRL
+                      formatField('54', valorFormatado) +
+                      formatField('58', 'BR') +
+                      formatField('59', nomeBeneficiado.substring(0, 25)) +
+                      formatField('60', cidadeBeneficiado.substring(0, 15)) +
+                      formatField('62', formatField('05', txid.substring(0, 25))) +
+                      '6304';
+        
+        // Cálculo do CRC16 (código de verificação)
+        let crc = 0xFFFF;
+        for (let i = 0; i < payload.length; i++) {
+            crc ^= (payload.charCodeAt(i) << 8);
+            for (let j = 0; j < 8; j++) {
+                crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+            }
+        }
+        const crc16 = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+        payload += crc16;
+
+        // 3. Exibir QR Code e código Copia e Cola
+        pixQrCodeContainer.innerHTML = '';
+        new QRCode(pixQrCodeContainer, {
+            text: payload,
+            width: 256,
+            height: 256,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
         });
-        mensagem += `*TOTAL DO PEDIDO: R$ ${totalPedido.toFixed(2)}*\n\nAguardo o contato para combinar o pagamento e a entrega. Obrigado!`;
-        
-        const linkWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
-        window.open(linkWhatsapp, '_blank');
-        
-        localStorage.removeItem('antunesCleanCart');
-        window.showNotification('Seu pedido foi enviado! Continue a conversa no WhatsApp.');
-        setTimeout(() => {
-           checkoutForm.reset();
-           renderPage();
-        }, 500);
+        pixCopyPaste.value = payload;
+    }
+
+    // --- AÇÕES DOS BOTÕES DA SEÇÃO PIX ---
+    if (copyPixBtn) {
+        copyPixBtn.addEventListener('click', () => {
+            pixCopyPaste.select();
+            document.execCommand('copy');
+            window.showNotification('Código PIX copiado!');
+        });
+    }
+
+    if (sendReceiptBtn) {
+        sendReceiptBtn.addEventListener('click', () => {
+            const customerInfo = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                reference: document.getElementById('reference').value
+            };
+            const cart = getCart();
+            const totalPedido = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+            let mensagem = `Olá, Antunes Clean! 👋\n\nEstou enviando o comprovante de pagamento do meu pedido.\n\n*--- RESUMO DO PEDIDO ---*\n`;
+            cart.forEach(item => {
+                mensagem += `*${item.name}* (x${item.quantity}) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+            mensagem += `\n*VALOR TOTAL: R$ ${totalPedido.toFixed(2)}*\n\n`;
+            mensagem += `*--- DADOS DE ENTREGA ---*\n*Nome:* ${customerInfo.name}\n*Endereço:* ${customerInfo.address}\n`;
+            if (customerInfo.reference) { mensagem += `*Referência:* ${customerInfo.reference}\n`; }
+            mensagem += `*Telefone:* ${customerInfo.phone}\n\n`;
+            mensagem += `Aguardo a confirmação e o envio. Obrigado(a)!`;
+
+            const linkWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
+            window.open(linkWhatsapp, '_blank');
+
+            // Limpa o carrinho e reseta a página
+            localStorage.removeItem('antunesCleanCart');
+            setTimeout(() => {
+               checkoutForm.reset();
+               renderPage(); // Volta para a tela inicial do carrinho (que agora estará vazia)
+            }, 1000);
+        });
     }
 
     // --- INICIALIZAÇÃO ---
