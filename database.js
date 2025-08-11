@@ -177,5 +177,27 @@ const allProducts = [
         brand: 'Antunes Clean',
         tag: null,
         description: 'Pacote de sacos de lixo reforçados com capacidade para 20 litros.'
-    }
+    },
+    {
+        id: 18,
+        name: 'COPO DESC 180 ML TRANS',
+        price: 134.80,
+        image: 'imagens/copodescartavel.webp',
+        category: 'Papeis, Panos, Copo e Esponja',
+        brand: 'Antunes Clean',
+        tag: null,
+        description: 'COPO DESC 180 ML TRANS C/2500 PP'
+    },
+    {
+        id: 19,
+        name: 'PAPEL HIG. ROLAO BRANCO',
+        price: 59.00,
+        image: 'imagens/papelrolao.webp',
+        category: 'Papeis, Panos, Copo e Esponja',
+        brand: 'Antunes Clean',
+        tag: null,
+        description: 'PAPEL HIG. ROLAO BRANCO 220Mts'
+    },
+    
+
 ];
