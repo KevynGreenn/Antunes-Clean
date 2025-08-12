@@ -17,15 +17,39 @@ window.updateCartCount = function() {
     if (cartCountElement) { cartCountElement.textContent = totalItems; }
 };
 
+// Em script.js
+
 window.handleAddToCart = function(e) {
-    const card = e.target.closest('.product-card');
+    // Pega o botão que foi clicado
+    const button = e.target;
+    
+    // Evita múltiplos cliques enquanto a animação ocorre
+    if (button.disabled) {
+        return;
+    }
+
+    const card = button.closest('.product-card');
     const product = { id: card.dataset.id, name: card.dataset.name, price: parseFloat(card.dataset.price), image: card.dataset.image };
     let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
     const existingItem = cart.find(item => item.id === product.id);
     if (existingItem) { existingItem.quantity++; } else { cart.push({ ...product, quantity: 1 }); }
     localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
+    
+    // A notificação continua existindo
     window.showNotification(`"${product.name}" foi adicionado ao carrinho!`);
     window.updateCartCount();
+
+    // Lógica do feedback visual
+    button.textContent = 'Adicionado ✓';
+    button.classList.add('added');
+    button.disabled = true;
+
+    // Volta ao normal após 2 segundos
+    setTimeout(() => {
+        button.textContent = 'Adicionar ao Carrinho';
+        button.classList.remove('added');
+        button.disabled = false;
+    }, 2000);
 };
 
 window.addCartButtonEvents = function() {
@@ -39,7 +63,7 @@ window.addCartButtonEvents = function() {
 // --- LÓGICA DA PÁGINA ---
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- OBSERVADORES (Animação e Lazy Loading) ---
+    // --- OBSERVADORES (Animação) ---
     const animationObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -49,23 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { threshold: 0.1 });
 
-    const lazyImageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.onload = () => { img.classList.add('loaded'); };
-                observer.unobserve(img);
-            }
-        });
-    });
-
-    // Função GLOBAL que aplica os observadores a um conjunto de elementos
     window.observeElements = function(containerSelector) {
         const container = document.querySelector(containerSelector);
         if (!container) return;
         container.querySelectorAll('.animate-on-scroll').forEach(el => animationObserver.observe(el));
-        container.querySelectorAll('.lazy-image').forEach(img => lazyImageObserver.observe(img));
     };
 
 
@@ -86,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
             card.setAttribute('data-image', product.image);
             card.innerHTML = `
                 <a href="produto-detalhe.html?id=${product.id}" class="product-card-link">
-                    <img class="lazy-image" src="imagens/placeholder.webp" data-src="${product.image}" alt="${product.name}">
+                    <img src="${product.image}" alt="${product.name}">
                     <div class="card-title">${product.name.toUpperCase()}</div>
                     <div class="card-price">R$ ${product.price.toFixed(2)}</div>
                 </a>
@@ -95,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             grid.appendChild(card);
         });
         window.addCartButtonEvents();
-        window.observeElements('#featured-products-grid'); // Aplica os observadores
+        window.observeElements('#featured-products-grid');
     }
 
     // --- COMPONENTES GERAIS DO SITE ---
@@ -109,11 +120,32 @@ document.addEventListener('DOMContentLoaded', function() {
         backToTopButton.addEventListener('click', (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     }
 
+    // --- NOVA LÓGICA DO MODO ESCURO ---
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+
+    // Aplica o tema salvo ao carregar a página
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Adiciona o evento de clique no botão
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            // Salva a preferência no localStorage
+            let theme = 'light';
+            if (document.body.classList.contains('dark-mode')) {
+                theme = 'dark';
+            }
+            localStorage.setItem('theme', theme);
+        });
+    }
+
+
     // --- INICIALIZAÇÃO ---
-    // Aplica observadores aos elementos estáticos de qualquer página
     window.observeElements('main');
-    // Carrega os produtos em destaque (só vai funcionar se estiver na index.html)
     loadFeaturedProducts();
-    // Atualiza o contador do carrinho
     window.updateCartCount();
 });

@@ -17,7 +17,9 @@
     border: 1px solid var(--border-color);
     font-size: 1rem;
     font-family: var(--sans-font);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-white); /* Adicionado para modo escuro */
+    color: var(--text-dark); /* Adicionado para modo escuro */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
 }
 
 #search-input:focus {
@@ -34,7 +36,7 @@
     color: var(--text-light);
 }
 .products-page-main {
-    background-color: var(--bg-beige);
+    background-color: var(--bg-light);
     padding: 60px 0;
 }
 
@@ -54,19 +56,20 @@
 
 /* --- Barra de Filtros (Esquerda) --- */
 .filters-sidebar {
-    background-color: #fff;
+    background-color: var(--bg-white); /* CORRIGIDO */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: sticky;
     top: 100px; /* Header height + 20px */
+    transition: background-color 0.3s ease;
 }
 
 .filters-sidebar h3 {
     font-size: 1.5rem;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .filter-group {
@@ -82,9 +85,11 @@
 .filter-group select, .filter-group input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
+    background-color: var(--bg-white); /* Adicionado */
+    color: var(--text-dark); /* Adicionado */
 }
 
 /* --- Container da Grade de Produtos (Direita) --- */
@@ -105,24 +110,20 @@
 
 .sort-container select {
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
+    background-color: var(--bg-white);
+    color: var(--text-dark);
 }
 
-/* --- Estilo dos Cards de Produto (sobrescreve o estilo de style.css se necessário) --- */
-/* Usando a classe .product-grid de style.css para reuso */
+/* --- Estilo dos Cards de Produto --- */
 .products-content-area .product-grid {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .products-content-area .product-card {
-    background-color: #fff;
-    border: 1px solid #eee;
-}
-
-.products-content-area .product-card img {
-    background-color: #f7f7f7; /* Fundo cinza claro para a imagem */
-    height: 220px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--border-color);
 }
 
 .products-content-area .card-title {
@@ -153,7 +154,7 @@
 
 .price-filter-list a {
     text-decoration: none;
-    color: var(--brand-blue);
+    color: var(--brand-primary);
     transition: color 0.3s;
 }
 
@@ -163,7 +164,7 @@
 
 .price-filter-list a.active {
     font-weight: bold;
-    color: var(--dark-text);
+    color: var(--text-dark);
 }
 
 /* Estilos para o container de filtros ativos */
@@ -189,6 +190,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    color: #333; /* Força cor escura para o texto da tag */
 }
 
 .filter-tag button.remove-filter {

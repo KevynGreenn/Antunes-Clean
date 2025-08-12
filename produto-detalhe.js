@@ -22,16 +22,35 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- LÓGICA DA GALERIA DE IMAGENS ---
         const thumbnailsContainer = document.getElementById('product-thumbnails');
         if (product.gallery && product.gallery.length > 1) {
-            thumbnailsContainer.innerHTML = ''; // Limpa o container
+            thumbnailsContainer.innerHTML = ''; 
             product.gallery.forEach((imgSrc, index) => {
                 const thumb = document.createElement('img');
                 thumb.src = imgSrc;
                 thumb.className = 'thumbnail-image';
-                if (index === 0) thumb.classList.add('active'); // Ativa a primeira miniatura
+                if (index === 0) thumb.classList.add('active'); 
 
                 thumb.addEventListener('click', () => {
-                    mainImage.src = imgSrc; // Muda a imagem principal
-                    // Atualiza a classe 'active'
+                    // 1. Atualiza a imagem principal
+                    mainImage.src = imgSrc;
+
+                    // 2. ATUALIZAÇÃO PARA O ZOOM: Reinicia o efeito na nova imagem
+                    var container = document.getElementById('product-image-container');
+                    // Remove a janela de zoom antiga, se houver
+                    var oldZoomView = container.querySelector('.js-image-zoom__zoomed-area');
+                    if (oldZoomView) {
+                        oldZoomView.remove();
+                    }
+                    // A imagem dentro do container também precisa ser atualizada para o zoom funcionar
+                    container.querySelector('img').src = imgSrc; 
+                    // Cria uma nova instância do zoom para a nova imagem
+                    new ImageZoom(container, {
+                        width: 400,
+                        zoomWidth: 500,
+                        offset: {vertical: 0, horizontal: 10},
+                        zoomPosition: 'right'
+                    });
+
+                    // 3. Atualiza qual miniatura está ativa (com a borda)
                     thumbnailsContainer.querySelector('.active').classList.remove('active');
                     thumb.classList.add('active');
                 });
@@ -47,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const addToCartBtn = document.getElementById('add-to-cart-detail');
         addToCartBtn.addEventListener('click', () => {
+            if (addToCartBtn.disabled) { return; }
+
             let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
             const quantity = parseInt(quantityInput.value);
             const existingItem = cart.find(item => item.id === product.id.toString());
@@ -54,7 +75,37 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
             window.updateCartCount();
             window.showNotification(`${quantity}x "${product.name}" foi adicionado ao carrinho!`);
+
+            addToCartBtn.textContent = 'Adicionado ✓';
+            addToCartBtn.classList.add('added');
+            addToCartBtn.disabled = true;
+
+            setTimeout(() => {
+                addToCartBtn.textContent = 'Adicionar ao Carrinho';
+                addToCartBtn.classList.remove('added');
+                addToCartBtn.disabled = false;
+            }, 2000);
         });
+        
+        const buyNowBtn = document.getElementById('buy-now-btn');
+        if (buyNowBtn) {
+            buyNowBtn.addEventListener('click', () => {
+                let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
+                const quantity = parseInt(quantityInput.value);
+                const existingItem = cart.find(item => item.id === product.id.toString());
+                if (existingItem) { existingItem.quantity += quantity; } else { cart.push({ ...product, id: product.id.toString(), quantity: quantity }); }
+                localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
+                window.updateCartCount();
+                window.location.href = 'carrinho.html';
+            });
+        }
+        
+        const shareWhatsapp = document.getElementById('share-whatsapp');
+        if(shareWhatsapp) {
+            const pageUrl = window.location.href;
+            const shareText = encodeURIComponent(`Olha que legal este produto que encontrei na Antunes Clean: ${product.name}! ${pageUrl}`);
+            shareWhatsapp.href = `https://api.whatsapp.com/send?text=${shareText}`;
+        }
 
         const relatedProductsGrid = document.getElementById('related-products-grid');
         const relatedProducts = allProducts.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);

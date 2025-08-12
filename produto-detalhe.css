@@ -1,18 +1,19 @@
 /* Estilos para a página de detalhe do produto */
 /*teste*/
 .product-detail-page {
-    background-color: #fff;
+    background-color: var(--bg-light); /* CORRIGIDO */
     padding: 40px 0;
+    transition: background-color 0.3s ease;
 }
 
 .breadcrumbs {
     margin-bottom: 20px;
     font-size: 0.9rem;
-    color: #888;
+    color: var(--text-light); /* CORRIGIDO */
 }
 
 .breadcrumbs a {
-    color: var(--brand-blue);
+    color: var(--brand-primary);
     text-decoration: none;
 }
 
@@ -33,9 +34,11 @@
 
 .product-image-container {
     position: relative;
-    background-color: #f7f7f7;
+    background-color: var(--bg-white); /* CORRIGIDO */
     border-radius: 8px;
     padding: 20px;
+    border: 1px solid var(--border-color); /* Adicionada borda sutil */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .product-image-container img {
@@ -48,7 +51,7 @@
     position: absolute;
     top: 15px;
     left: 15px;
-    background-color: var(--brand-blue);
+    background-color: var(--brand-primary);
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
@@ -65,7 +68,7 @@
 .price-container {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--brand-blue);
+    color: var(--brand-primary);
     margin-bottom: 20px;
 }
 
@@ -73,7 +76,7 @@
     font-size: 1.1rem;
     line-height: 1.6;
     margin-bottom: 30px;
-    color: #555;
+    color: var(--text-light);
 }
 
 .actions-container {
@@ -84,7 +87,7 @@
 
 .quantity-selector {
     display: flex;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color); /* CORRIGIDO */
     border-radius: 8px;
 }
 
@@ -94,15 +97,18 @@
     font-size: 1.5rem;
     cursor: pointer;
     padding: 10px 15px;
+    color: var(--text-dark); /* CORRIGIDO */
 }
 
 .quantity-selector input {
     width: 50px;
     text-align: center;
     border: none;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
     font-size: 1.2rem;
+    background-color: var(--bg-light); /* CORRIGIDO */
+    color: var(--text-dark); /* CORRIGIDO */
 }
 /* Remove as setas padrão do input number */
 .quantity-selector input::-webkit-outer-spin-button,
@@ -118,7 +124,7 @@
 .related-products-section {
     margin-top: 80px;
     padding-top: 40px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color); /* CORRIGIDO */
 }
 
 .related-products-section h2 {
@@ -146,54 +152,42 @@
     display: flex;
     gap: 10px;
     margin-top: 15px;
-    flex-wrap: wrap; /* Permite que as imagens quebrem a linha */
+    flex-wrap: wrap; 
 }
 
 .thumbnail-image {
     width: 80px;
     height: 80px;
     object-fit: cover;
-    border: 2px solid #eee;
+    border: 2px solid var(--border-color); /* CORRIGIDO */
     border-radius: 8px;
     cursor: pointer;
     transition: border-color 0.3s ease;
 }
 
 .thumbnail-image:hover {
-    border-color: #ccc;
+    border-color: var(--text-light); /* CORRIGIDO */
 }
 
 .thumbnail-image.active {
-    border-color: var(--brand-blue);
+    border-color: var(--brand-primary); /* CORRIGIDO */
 }
-/* --- Estilos para a Galeria de Imagens do Produto --- */
-
-.product-gallery {
+/* Adicione ao final de produto-detalhe.css */
+.social-share-container {
+    margin-top: 30px;
     display: flex;
-    flex-direction: column;
-}
-
-.product-gallery-thumbnails {
-    display: flex;
+    align-items: center;
     gap: 10px;
-    margin-top: 15px;
-    flex-wrap: wrap; /* Permite que as imagens quebrem a linha */
+    color: var(--text-light);
 }
-
-.thumbnail-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border: 2px solid #eee;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
+.social-share-btn {
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: transform 0.2s;
 }
-
-.thumbnail-image:hover {
-    border-color: #ccc;
+.social-share-btn:hover {
+    transform: scale(1.1);
 }
-
-.thumbnail-image.active {
-    border-color: var(--brand-blue);
+.social-share-btn.whatsapp {
+    color: #25D366;
 }

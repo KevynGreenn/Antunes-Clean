@@ -10,11 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const priceFilterList = document.getElementById('price-filter-list');
     const sortBySelect = document.getElementById('sort-by');
     const activeFiltersContainer = document.getElementById('active-filters');
-    
-    // Pega o novo campo de busca do HTML
     const searchInput = document.getElementById('search-input'); 
 
-    // Verifica se a base de dados de produtos existe
     if (typeof allProducts === 'undefined') {
         console.error("Database de produtos (database.js) não foi carregada.");
         if (productGridElement) productGridElement.innerHTML = "<p>Erro ao carregar produtos.</p>";
@@ -77,25 +74,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function handleAddToCartOnProductsPage(e) {
-        const card = e.target.closest('.product-card');
-        const product = {
-            id: card.dataset.id,
-            name: card.dataset.name,
-            price: parseFloat(card.dataset.price),
-            image: card.dataset.image
-        };
-        let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
-        const existingItem = cart.find(item => item.id === product.id);
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push({ ...product, quantity: 1 });
-        }
-        localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
-        window.showNotification(`"${product.name}" foi adicionado ao carrinho!`);
-        window.updateCartCount();
+    // Em produtos.js
+
+function handleAddToCartOnProductsPage(e) {
+    const button = e.target;
+
+    if (button.disabled) {
+        return;
     }
+
+    const card = button.closest('.product-card');
+    const product = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        price: parseFloat(card.dataset.price),
+        image: card.dataset.image
+    };
+    let cart = JSON.parse(localStorage.getItem('antunesCleanCart')) || [];
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ ...product, quantity: 1 });
+    }
+    localStorage.setItem('antunesCleanCart', JSON.stringify(cart));
+    window.showNotification(`"${product.name}" foi adicionado ao carrinho!`);
+    window.updateCartCount();
+
+    // Lógica do feedback visual
+    button.textContent = 'Adicionado ✓';
+    button.classList.add('added');
+    button.disabled = true;
+
+    setTimeout(() => {
+        button.textContent = 'Adicionar ao Carrinho';
+        button.classList.remove('added');
+        button.disabled = false;
+    }, 2000);
+}
 
     function updateActiveFilters() {
         activeFiltersContainer.innerHTML = '';
@@ -116,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function filterAndSortProducts() {
         let filteredProducts = [...initialProducts];
 
-        // 1. APLICA FILTRO DE BUSCA (NOVA LÓGICA)
         const searchTerm = searchInput.value.toLowerCase().trim();
         if (searchTerm) {
             filteredProducts = filteredProducts.filter(p =>
@@ -124,16 +139,13 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
 
-        // 2. Aplica Filtro de Marca
         const selectedBrand = brandFilter.value;
         if (selectedBrand !== 'all') {
             filteredProducts = filteredProducts.filter(p => p.brand === selectedBrand);
         }
 
-        // 3. Aplica Filtro de Preço
         filteredProducts = filteredProducts.filter(p => p.price >= currentPriceFilter.min && p.price <= currentPriceFilter.max);
 
-        // 4. Aplica Ordenação
         const sortValue = sortBySelect.value;
         switch (sortValue) {
             case 'price-asc':
@@ -153,15 +165,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- INICIALIZAÇÃO DA PÁGINA ---
     pageTitleElement.textContent = formatTitle(category);
-
     populateBrandFilter();
-    
-    // Adiciona o listener para o campo de busca
     searchInput.addEventListener('input', filterAndSortProducts);
-
     brandFilter.addEventListener('change', filterAndSortProducts);
     sortBySelect.addEventListener('change', filterAndSortProducts);
-
     priceFilterList.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();

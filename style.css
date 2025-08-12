@@ -1,19 +1,31 @@
-/* --- GERAL, NOVA PALETA DE CORES E TIPOGRAFIA MODERNA --- */
+/* --- GERAL, PALETAS DE CORES E TIPOGRAFIA --- */
 /*teste*/
 :root {
-    /* NOVA PALETA DE CORES */
-    --brand-primary: #00796B; /* Verde escuro para títulos e destaques */
-    --brand-action: #FFAB40;  /* Laranja para botões e ações */
-    --bg-light: #F5F5F5;      /* Cinza claro para fundos de seção */
+    /* TEMA CLARO (PADRÃO) */
+    --brand-primary: #00796B;
+    --brand-action: #FFAB40;
+    --bg-light: #F5F5F5;
     --bg-white: #FFFFFF;
-    --text-dark: #212121;     /* Preto suave para textos principais */
-    --text-light: #757575;    /* Cinza para textos secundários */
-    --border-color: #E0E0E0;   /* Cor sutil para bordas */
+    --text-dark: #212121;
+    --text-light: #757575;
+    --border-color: #E0E0E0;
 
-    /* TIPOGRAFIA MODERNA */
+    /* TIPOGRAFIA */
     --serif-font: 'Lora', serif;
     --sans-font: 'Poppins', sans-serif;
 }
+
+/* TEMA ESCURO */
+body.dark-mode {
+    --brand-primary: #4DB6AC; /* Verde mais claro */
+    --brand-action: #FFB74D; /* Laranja mais claro */
+    --bg-light: #212121;  /* Fundo principal escuro */
+    --bg-white: #303030;  /* Fundo dos cards escuro */
+    --text-dark: #F5F5F5;  /* Texto principal claro */
+    --text-light: #BDBDBD; /* Texto secundário claro */
+    --border-color: #424242; /* Bordas mais sutis */
+}
+
 
 * {
     margin: 0;
@@ -25,8 +37,16 @@
 body {
     font-family: var(--sans-font);
     color: var(--text-dark);
-    background-color: var(--bg-white);
+    background-color: var(--bg-light); /* Fundo principal da página */
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex; /* Adicionado para o rodapé */
+    flex-direction: column; /* Adicionado para o rodapé */
+    min-height: 100vh; /* Adicionado para o rodapé */
+}
+
+main {
+    flex-grow: 1; /* Adicionado para o rodapé */
 }
 
 .container {
@@ -52,7 +72,7 @@ h2::after {
     display: block;
     width: 60px;
     height: 3px;
-    background-color: var(--brand-action); /* Usando a cor de ação */
+    background-color: var(--brand-action);
     margin: 0.5rem auto 0;
 }
 
@@ -81,6 +101,7 @@ section {
     position: sticky;
     top: 0;
     z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 .header .container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
 .logo { font-family: var(--serif-font); font-size: 2rem; color: var(--brand-primary); text-decoration: none; font-weight: bold;}
@@ -89,14 +110,28 @@ section {
     padding-bottom: 5px; border-bottom: 2px solid transparent; transition: border-color 0.3s, color 0.3s;
 }
 .nav-menu a:hover, .nav-menu a.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); }
+
 .header-icons { display: flex; align-items: center; gap: 20px; }
-.cart-icon { font-size: 1.5rem; color: var(--text-dark); position: relative; text-decoration: none; }
+.cart-icon, .theme-toggle { font-size: 1.5rem; color: var(--text-dark); position: relative; text-decoration: none; }
 .cart-count {
     position: absolute; top: -5px; right: -10px; background-color: var(--brand-action); color: #fff;
     width: 20px; height: 20px; border-radius: 50%; font-size: 0.75rem; font-weight: bold;
     display: flex; justify-content: center; align-items: center;
 }
 .hamburger { display: none; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--text-dark); }
+
+
+/* BOTÃO MODO ESCURO */
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+.theme-toggle .fa-sun { display: none; }
+.dark-mode .theme-toggle .fa-sun { display: inline-block; }
+.dark-mode .theme-toggle .fa-moon { display: none; }
+
 
 /* --- HERO --- */
 .hero {
@@ -107,7 +142,7 @@ section {
 }
 .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); z-index: 1; }
 .hero-card {
-    position: relative; z-index: 2; background-color: rgba(255, 255, 255, 0.1); padding: 50px 70px;
+    position: relative; z-index: 2; background-color: rgba(0, 0, 0, 0.3); padding: 50px 70px;
     text-align: center; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
@@ -116,20 +151,20 @@ section {
 
 /* --- BOTÃO PRINCIPAL COM ANIMAÇÃO --- */
 .btn {
-    background-color: var(--brand-action); color: #fff; padding: 12px 30px; text-decoration: none;
+    background-color: var(--brand-action); color: var(--bg-light); padding: 12px 30px; text-decoration: none;
     border-radius: 8px; font-weight: bold; font-size: 1rem; transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
     border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .btn:hover {
-    background-color: #ff8f00; /* Laranja mais escuro */
+    background-color: #ff8f00; 
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 .btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
 /* --- SEÇÕES --- */
-.about, .contact, .products-page-main /* Adicionando a página de produtos aqui */ {
+.about, .contact, .products-page-main {
     background-color: var(--bg-light);
 }
 
@@ -142,7 +177,7 @@ section {
 .column-text h2::after { margin-left: 0; }
 .column-text p { font-size: 1.1rem; line-height: 1.7; color: var(--text-light); }
 
-/* --- CARDS DE PRODUTO COM ANIMAÇÃO --- */
+/* --- CARDS DE PRODUTO --- */
 .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px; }
 .product-card {
     background-color: var(--bg-white);
@@ -152,20 +187,30 @@ section {
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
-.product-card img { width: 100%; height: 250px; object-fit: cover; display: block; }
+
+.product-card img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 1 / 1;
+    object-fit: contain; 
+    background-color: var(--bg-light); 
+    transition: background-color 0.3s ease;
+}
+
 .card-title { padding: 15px; font-weight: bold; flex-grow: 1; font-family: var(--sans-font); color: var(--text-dark); }
 .card-price { font-size: 1.2rem; color: var(--brand-primary); font-weight: bold; padding: 0 15px 15px; }
 .add-to-cart-btn {
     width: calc(100% - 30px); margin: 0 15px 15px; border-radius: 8px;
     padding: 12px; text-transform: none; background-color: var(--brand-primary);
+    color: var(--bg-light); 
 }
-.add-to-cart-btn:hover { background-color: #004D40; /* Verde mais escuro */}
+.add-to-cart-btn:hover { background-color: #004D40; }
 .product-card-link { text-decoration: none; color: inherit; }
 
 /* --- CONTATO --- */
@@ -179,7 +224,9 @@ section {
 .contact-form input, .contact-form textarea {
     width: 100%; padding: 15px; border: 1px solid var(--border-color);
     border-radius: 8px; font-size: 1rem; font-family: var(--sans-font);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--bg-white); 
+    color: var(--text-dark); 
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
 }
 .contact-form input:focus, .contact-form textarea:focus {
     outline: none;
@@ -187,10 +234,23 @@ section {
     box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.2);
 }
 
+/* --- RODAPÉ --- */
+.footer-section {
+    background-color: var(--bg-white);
+    color: var(--text-light);
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 0.9rem;
+    margin-top: auto;
+    border-top: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
 /* --- BOTÃO VOLTAR AO TOPO --- */
 .back-to-top {
     position: fixed; bottom: 20px; right: 20px; background-color: var(--brand-action);
-    color: #fff; width: 40px; height: 40px; border-radius: 50%; text-align: center;
+    color: var(--bg-light); width: 40px; height: 40px; border-radius: 50%; text-align: center;
     line-height: 40px; font-size: 1.2rem; text-decoration: none; opacity: 0;
     visibility: hidden; transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
 }
@@ -215,7 +275,7 @@ section {
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .nav-menu.mobile-active { display: flex; }
-    .nav-menu a { padding: 15px; text-align: center; width: 100%; border-bottom: 1px solid #eee; }
+    .nav-menu a { padding: 15px; text-align: center; width: 100%; border-bottom: 1px solid var(--border-color); }
     .two-columns, .two-columns.reverse { flex-direction: column; }
     .contact-grid { grid-template-columns: 1fr; }
     .hero-card { padding: 40px; width: 90%; }
@@ -227,14 +287,9 @@ section {
     .product-grid { grid-template-columns: 1fr; }
     .contact-form .form-row { flex-direction: column; }
 }
-/* Adicione no final de style.css */
+/* Adicione esta regra ao seu style.css, pode ser junto com os outros estilos de botão */
 
-/* Estilos para o Lazy Loading */
-.lazy-image {
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-}
-
-.lazy-image.loaded {
-    opacity: 1;
+.btn.added {
+    background-color: #004D40; /* Um verde mais escuro para confirmação */
+    cursor: default;
 }

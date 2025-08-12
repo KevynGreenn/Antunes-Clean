@@ -10,6 +10,14 @@
     <link rel="icon" type="image/png" href="imagens/aaa.png">
 </head>
 <body>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
 
     <header class="header">
         <div class="container">
@@ -19,10 +27,13 @@
                 <a href="produtos.html">Produtos</a>
             </nav>
             <div class="header-icons">
-                <a href="carrinho.html" class="cart-icon">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cart-count">0</span>
-                </a>
+                <button class="theme-toggle" id="theme-toggle" title="Alterar tema">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
+                <button class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -70,10 +81,12 @@
                         <span id="summary-total">R$0.00</span>
                     </div>
                 </div>
+                <button id="clear-cart-btn" class="btn btn-clear-cart">Limpar Carrinho</button>
                  <div class="continue-shopping">
                     <a href="produtos.html" class="continue-shopping-link">Continuar comprando</a>
                 </div>
             </aside>
+
         </div>
 
         <div id="pix-payment-section" class="pix-payment-container" style="display: none;">
@@ -98,8 +111,27 @@
         </div>
     </main>
     
+    <footer class="footer-section">
+        <div class="container">
+            <p>&copy; 2025 Antunes Clean. Todos os direitos reservados.</p>
+            <p>Três Lagoas - MS</p>
+        </div>
+    </footer>
+
+    <div id="confirmation-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h4>Confirmar Ação</h4>
+            <p>Tem certeza que deseja remover todos os itens do carrinho?</p>
+            <div class="modal-actions">
+                <button id="confirm-clear-btn" class="btn btn-danger">Sim, Limpar</button>
+                <button id="cancel-clear-btn" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
     <div id="notification" class="notification"></div>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="https://unpkg.com/imask"></script>
     <script src="script.js"></script>
     <script src="carrinho.js"></script>
 </body>

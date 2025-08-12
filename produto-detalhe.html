@@ -1,6 +1,6 @@
-<!-- Meu comentário em HTML -->
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="icon" type="image/png" href="imagens/aaa.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Lora:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+    </script>
 
     <header class="header">
         <div class="container">
@@ -22,11 +32,14 @@
             <nav class="nav-menu" id="nav-menu">
                 <a href="index.html#home" class="nav-link">Home</a>
                 <a href="index.html#sobre-nos" class="nav-link">Sobre Nós</a>
-                <a href="index.html#servicos" class="nav-link">Serviços</a>
                 <a href="produtos.html" class="nav-link active">Produtos</a>
                 <a href="index.html#contato" class="nav-link">Contato</a>
             </nav>
             <div class="header-icons">
+                <button class="theme-toggle" id="theme-toggle" title="Alterar tema">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                </button>
                 <a href="carrinho.html" class="cart-icon" id="cart-icon">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count" id="cart-count">0</span>
@@ -44,12 +57,12 @@
 
             <div class="product-main-section">
                 <div class="product-gallery">
-                    <div class="product-image-container">
+                    <div id="product-image-container" class="product-image-container">
                         <img id="main-product-image" src="" alt="Imagem do Produto">
                         <div id="product-tag" class="tag"></div>
                     </div>
                     <div class="product-gallery-thumbnails" id="product-thumbnails">
-                        </div>
+                    </div>
                 </div>
 
                 <div class="product-info-container">
@@ -58,7 +71,7 @@
                         <span id="product-price"></span>
                     </div>
                     <p id="product-short-description"></p>
-                    
+
                     <div class="actions-container">
                         <div class="quantity-selector">
                             <button id="decrease-qty">-</button>
@@ -66,6 +79,13 @@
                             <button id="increase-qty">+</button>
                         </div>
                         <button id="add-to-cart-detail" class="btn">Adicionar ao Carrinho</button>
+                    </div>
+                    <div class="social-share-container">
+                        <span>Partilhar:</span>
+                        <a id="share-whatsapp" href="#" target="_blank" class="social-share-btn whatsapp"
+                            title="Partilhar no WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -76,12 +96,36 @@
             </section>
         </div>
     </main>
-    
+    <footer class="footer-section">
+        <div class="container">
+            <p>&copy; 2025 Antunes Clean. Todos os direitos reservados.</p>
+            <p>Três Lagoas - MS</p>
+        </div>
+    </footer>
+
     <a href="#" id="back-to-top" class="back-to-top"><i class="fas fa-chevron-up"></i></a>
     <div id="notification" class="notification"></div>
 
     <script src="database.js"></script>
     <script src="script.js"></script>
     <script src="produto-detalhe.js"></script>
+    <script src="https://unpkg.com/js-image-zoom@0.7.0/js-image-zoom.min.js"></script>
+    <script>
+        // Ativa o zoom na imagem do produto
+        var options = {
+            width: 400,
+            zoomWidth: 500,
+            offset: { vertical: 0, horizontal: 10 },
+            zoomPosition: 'right'
+        };
+        // Garante que o script só rode quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.getElementById('product-image-container');
+            if (container) {
+                new ImageZoom(container, options);
+            }
+        });
+    </script>
 </body>
+
 </html>

@@ -7,20 +7,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const nomeBeneficiado = 'Antunes Clean';
     const cidadeBeneficiado = 'TRES LAGOAS';
 
-    // --- ELEMENTOS DO DOM ---
+    // --- ELEMENTOS DO DOM (CORRIGIDO) ---
     const checkoutForm = document.getElementById('checkout-form');
     const summaryItemsList = document.getElementById('summary-items-list');
     const summarySubtotal = document.getElementById('summary-subtotal');
     const summaryTotal = document.getElementById('summary-total');
     const cartContainer = document.getElementById('cart-container');
     const emptyCartMessage = document.getElementById('empty-cart-message');
-
-    // --- SEÇÃO PIX ---
     const pixPaymentSection = document.getElementById('pix-payment-section');
     const pixQrCodeContainer = document.getElementById('pix-qrcode-container');
     const pixCopyPaste = document.getElementById('pix-copy-paste');
     const copyPixBtn = document.getElementById('copy-pix-btn');
     const sendReceiptBtn = document.getElementById('send-receipt-btn');
+    const clearCartBtn = document.getElementById('clear-cart-btn');
+    const confirmationModal = document.getElementById('confirmation-modal');
+    const confirmClearBtn = document.getElementById('confirm-clear-btn');
+    const cancelClearBtn = document.getElementById('cancel-clear-btn');
+
+    // --- LÓGICA DO BOTÃO LIMPAR CARRINHO COM MODAL ---
+    if (clearCartBtn) {
+        clearCartBtn.addEventListener('click', () => {
+            confirmationModal.style.display = 'flex';
+            setTimeout(() => confirmationModal.classList.add('show'), 10);
+        });
+    }
+
+    if (confirmClearBtn) {
+        confirmClearBtn.addEventListener('click', () => {
+            localStorage.removeItem('antunesCleanCart');
+            renderPage();
+            window.showNotification('Carrinho esvaziado!');
+            confirmationModal.classList.remove('show');
+            setTimeout(() => confirmationModal.style.display = 'none', 300);
+        });
+    }
+
+    if (cancelClearBtn) {
+        cancelClearBtn.addEventListener('click', () => {
+            confirmationModal.classList.remove('show');
+            setTimeout(() => confirmationModal.style.display = 'none', 300);
+        });
+    }
+
+    // --- LÓGICA DA MÁSCARA DE TELEFONE ---
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        const phoneMaskOptions = {
+            mask: [
+                { mask: '(00) 0000-0000' },
+                { mask: '(00) 00000-0000' }
+            ]
+        };
+        const mask = IMask(phoneInput, phoneMaskOptions);
+    }
 
     // --- FUNÇÕES DE MANIPULAÇÃO DO CARRINHO ---
     function getCart() { return JSON.parse(localStorage.getItem('antunesCleanCart')) || []; }
@@ -103,8 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleCheckoutSubmit(e) {
         e.preventDefault();
         
-        // A notificação automática para o dono foi REMOVIDA daqui.
-
         cartContainer.style.display = 'none';
         pixPaymentSection.style.display = 'block';
 
@@ -154,8 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
         pixCopyPaste.value = payload;
     }
 
-    // A função de notificação para o dono foi completamente REMOVIDA.
-
     if (copyPixBtn) {
         copyPixBtn.addEventListener('click', () => {
             pixCopyPaste.select();
@@ -185,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- INICIALIZAÇÃO ---
     if (checkoutForm) {
         checkoutForm.addEventListener('submit', handleCheckoutSubmit);
     }
