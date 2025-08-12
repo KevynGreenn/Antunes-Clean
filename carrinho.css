@@ -174,7 +174,30 @@
     background-color: #128C7E;
 }
 
+/* ... (todos os estilos anteriores) ... */
 
+.btn-full {
+    width: 100%; padding: 15px; margin-top: 10px; font-size: 1.1rem; display: flex;
+    align-items: center; justify-content: center; gap: 10px;
+}
+
+/* NOVO ESTILO ADICIONADO */
+.pix-warning-text {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #c0392b; /* Cor de aviso/alerta */
+    background-color: #f9e5e3;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.whatsapp-help-text {
+    text-align: center; font-size: 0.85rem; color: var(--gray-text); margin-top: 15px;
+}
+
+/* ... (restante dos estilos) ... */    
 /* --- Responsividade --- */
 @media (max-width: 992px) {
     .checkout-container { grid-template-columns: 1fr; }

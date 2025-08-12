@@ -33,8 +33,8 @@
                 <h3>Informações de Contato e Entrega</h3>
                 <form id="checkout-form">
                     <div class="form-group">
-                        <label for="name">Nome Completo *</label>
-                        <input type="text" id="name" required>
+                        <label for="name">Nome Completo (Titular da conta PIX) *</label>
+                        <input type="text" id="name" required placeholder="Insira o nome de quem fará o pagamento">
                     </div>
                     <div class="form-group">
                         <label for="phone">Telefone / WhatsApp *</label>
@@ -49,17 +49,17 @@
                         <input type="text" id="reference">
                     </div>
                     
+                    <p class="pix-warning-text">Atenção: O pagamento deve ser feito por uma conta PIX com o mesmo nome informado acima para a validação do pedido.</p>
+
                     <button type="submit" class="btn btn-full">
                         <i class="fas fa-dollar-sign"></i> Gerar PIX para Pagamento
                     </button>
-                    <p class="whatsapp-help-text">Após preencher seus dados, vamos gerar um QR Code PIX para você finalizar a compra.</p>
                 </form>
             </div>
 
             <aside class="order-summary-section">
                 <h4>Resumo do Pedido</h4>
-                <div id="summary-items-list">
-                    </div>
+                <div id="summary-items-list"></div>
                 <div class="summary-totals">
                     <div class="summary-line">
                         <span>Subtotal</span>
@@ -99,7 +99,6 @@
     </main>
     
     <div id="notification" class="notification"></div>
-    
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="script.js"></script>
     <script src="carrinho.js"></script>

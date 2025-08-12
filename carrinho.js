@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartContainer = document.getElementById('cart-container');
     const emptyCartMessage = document.getElementById('empty-cart-message');
 
-    // --- NOVA SEÇÃO PIX ---
+    // --- SEÇÃO PIX ---
     const pixPaymentSection = document.getElementById('pix-payment-section');
     const pixQrCodeContainer = document.getElementById('pix-qrcode-container');
     const pixCopyPaste = document.getElementById('pix-copy-paste');
@@ -98,22 +98,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.increase-qty').forEach(btn => btn.addEventListener('click', e => changeQuantity(e.currentTarget.dataset.id, 1)));
         document.querySelectorAll('.remove-btn').forEach(btn => btn.addEventListener('click', e => removeItem(e.currentTarget.dataset.id)));
     }
-
-    // --- NOVA LÓGICA DE CHECKOUT ---
+    
+    // --- LÓGICA DE CHECKOUT ---
     function handleCheckoutSubmit(e) {
         e.preventDefault();
         
-        // 1. Ocultar formulário e mostrar seção PIX
+        // A notificação automática para o dono foi REMOVIDA daqui.
+
         cartContainer.style.display = 'none';
         pixPaymentSection.style.display = 'block';
 
-        // 2. Gerar Payload do PIX
         const cart = getCart();
         const totalPedido = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        const txid = "pedido" + new Date().getTime(); // ID único da transação
+        const txid = "pedido" + new Date().getTime(); 
         const valorFormatado = totalPedido.toFixed(2);
         
-        // Função para formatar os campos do payload (EMV-QR)
         const formatField = (id, value) => {
             const len = value.length.toString().padStart(2, '0');
             return `${id}${len}${value}`;
@@ -125,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           formatField('01', chavePix)
                       ) +
                       formatField('52', '0000') +
-                      formatField('53', '986') + // Moeda: BRL
+                      formatField('53', '986') +
                       formatField('54', valorFormatado) +
                       formatField('58', 'BR') +
                       formatField('59', nomeBeneficiado.substring(0, 25)) +
@@ -133,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
                       formatField('62', formatField('05', txid.substring(0, 25))) +
                       '6304';
         
-        // Cálculo do CRC16 (código de verificação)
         let crc = 0xFFFF;
         for (let i = 0; i < payload.length; i++) {
             crc ^= (payload.charCodeAt(i) << 8);
@@ -144,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const crc16 = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
         payload += crc16;
 
-        // 3. Exibir QR Code e código Copia e Cola
         pixQrCodeContainer.innerHTML = '';
         new QRCode(pixQrCodeContainer, {
             text: payload,
@@ -157,7 +154,8 @@ document.addEventListener('DOMContentLoaded', function() {
         pixCopyPaste.value = payload;
     }
 
-    // --- AÇÕES DOS BOTÕES DA SEÇÃO PIX ---
+    // A função de notificação para o dono foi completamente REMOVIDA.
+
     if (copyPixBtn) {
         copyPixBtn.addEventListener('click', () => {
             pixCopyPaste.select();
@@ -169,37 +167,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sendReceiptBtn) {
         sendReceiptBtn.addEventListener('click', () => {
             const customerInfo = {
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-                reference: document.getElementById('reference').value
+                name: document.getElementById('name').value
             };
             const cart = getCart();
             const totalPedido = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-            let mensagem = `Olá, Antunes Clean! 👋\n\nEstou enviando o comprovante de pagamento do meu pedido.\n\n*--- RESUMO DO PEDIDO ---*\n`;
-            cart.forEach(item => {
-                mensagem += `*${item.name}* (x${item.quantity}) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
-            });
-            mensagem += `\n*VALOR TOTAL: R$ ${totalPedido.toFixed(2)}*\n\n`;
-            mensagem += `*--- DADOS DE ENTREGA ---*\n*Nome:* ${customerInfo.name}\n*Endereço:* ${customerInfo.address}\n`;
-            if (customerInfo.reference) { mensagem += `*Referência:* ${customerInfo.reference}\n`; }
-            mensagem += `*Telefone:* ${customerInfo.phone}\n\n`;
-            mensagem += `Aguardo a confirmação e o envio. Obrigado(a)!`;
+            let mensagem = `Olá, Antunes Clean! 👋\n\nEstou enviando o comprovante do PIX de *${customerInfo.name}* referente ao pedido no valor de *R$ ${totalPedido.toFixed(2)}*.\n\nAguardo a confirmação. Obrigado(a)!`;
 
             const linkWhatsapp = `https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(mensagem)}`;
             window.open(linkWhatsapp, '_blank');
 
-            // Limpa o carrinho e reseta a página
             localStorage.removeItem('antunesCleanCart');
             setTimeout(() => {
                checkoutForm.reset();
-               renderPage(); // Volta para a tela inicial do carrinho (que agora estará vazia)
+               renderPage();
             }, 1000);
         });
     }
 
-    // --- INICIALIZAÇÃO ---
     if (checkoutForm) {
         checkoutForm.addEventListener('submit', handleCheckoutSubmit);
     }
